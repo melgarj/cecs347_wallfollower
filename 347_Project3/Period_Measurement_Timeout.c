@@ -46,6 +46,36 @@ uint32_t second_time = 0;
 uint32_t first_read=0, second_read=0;
 uint8_t OutOfRange = 0;
 
+#define TURN_RIGHT 0x4
+#define TURN_LEFT 0x2
+#define GO_STRAIGHT 0x0
+
+#define IR_ON 0x1
+#define IR_OFF 0x0
+
+char direction;
+
+struct State{
+	unsigned long LPWM;
+	unsigned long RPWM;
+	
+	uint32_t NS[8];
+};
+
+typedef const struct State stateType;
+#define STRAIGHT 0
+#define RIGHT 1
+#define LEFT 2
+#define STOP 3
+
+stateType fsm[4]={
+	// Straight
+	{1, 1, {STRAIGHT, STOP, LEFT, STOP, RIGHT, STOP, STRAIGHT, STOP}},
+	{1, .25, {STRAIGHT, STOP, LEFT, STOP, RIGHT, STOP, STRAIGHT, STOP}},
+	{.25, 1, {STRAIGHT, STOP, LEFT, STOP, RIGHT, STOP, STRAIGHT, STOP}},
+	{.01, .01, {STRAIGHT, STOP, LEFT, STOP, RIGHT, STOP, STRAIGHT, STOP}}
+};
+
 int main(void){
 	
 //  PLL_Init(Bus80MHz);               // 80 MHz clock
