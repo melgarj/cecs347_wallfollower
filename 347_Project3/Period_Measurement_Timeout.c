@@ -34,6 +34,7 @@ void Timer0_Init(void);
 void Timer1_Init(void);
 void WaitForInterrupt(void);  // low power mode
 void EnableInterrupts(void);
+void PortD_Init(void);
 
 uint32_t period=0;
 uint8_t done=0, timeout=0;
@@ -47,7 +48,7 @@ uint32_t first_read=0, second_read=0;
 uint8_t OutOfRange = 0;
 
 // following variables are for for the ain use for the ir
-unsigned long ain1, ain2, ain3;
+unsigned long ain1, ain2, ain3, dutyCycle;
 char sample = 0; 
 
 ///////////////////ADC Stuff///////////////////
@@ -93,12 +94,13 @@ float DC;
 #define IR_OFF 0x0
 
 char direction;
+unsigned char s;
 
 struct State{
 	unsigned long LPWM;
 	unsigned long RPWM;
 	
-	uint32_t NS[8];
+	uint32_t NS[4];
 };
 
 typedef const struct State stateType;
@@ -109,23 +111,49 @@ typedef const struct State stateType;
 
 stateType fsm[4]={
 	// Straight
-	{1, 1, {STRAIGHT, STOP, LEFT, STOP, RIGHT, STOP, STRAIGHT, STOP}},
-	{1, .25, {STRAIGHT, STOP, LEFT, STOP, RIGHT, STOP, STRAIGHT, STOP}},
-	{.25, 1, {STRAIGHT, STOP, LEFT, STOP, RIGHT, STOP, STRAIGHT, STOP}},
-	{.01, .01, {STRAIGHT, STOP, LEFT, STOP, RIGHT, STOP, STRAIGHT, STOP}}
+	{4998, 4998, {STRAIGHT, RIGHT, LEFT, STOP}},
+	
+	// Right
+	{4998, 1250, {STRAIGHT, RIGHT, LEFT, STOP}},
+	
+	// Left
+	{1250, 4998, {STRAIGHT, RIGHT, LEFT, STOP}},
+	
+	// Stop
+	{1250, 1250, {STRAIGHT, RIGHT, LEFT, STOP}}
 };
 
+
+
+
 int main(void){
-	
+	period = 5000;
+	dutyCycle = 4998;
+	LEFTFORWARD   = 0xFF;
+	LEFTBACKWARD  = 0x00;					
+	RIGHTFORWARD  = 0xFF;
+	RIGHTBACKWARD = 0x00; 
 //  PLL_Init(Bus80MHz);               // 80 MHz clock
 	EnableInterrupts();
 	//PLL_Init();
 	Nokia5110_Init();
 	Nokia5110_Clear();
 	SysTick_Init();         // use default 16MHz clock
+	PortD_Init();
   Timer0_Init();          // initialize timer0A
-  Timer1_Init();	
+  Timer1_Init();
+  ain3 = 4998;
   while(1){
+		
+		
+		/*       	PWM           */
+		s = fsm[s].NS[STRAIGHT];
+		PWM1_0_CMPA_R = fsm[s].LPWM;
+		PWM1_0_CMPB_R = fsm[s].RPWM;
+		
+		/******************************/
+		
+		
 		Nokia5110_SetCursor(0,0);
 		GPIO_PORTB_DATA_R &= ~0x80; // send low to trigger
 		SysTick_Wait1us(2);
@@ -291,4 +319,5 @@ void PortD_Init(void){
   PWM1_0_CTL_R  |= 0x00000001;   	  // STEP 9: start the M1PWM5 generator
   PWM1_ENABLE_R |= 0x00000003;			// STEP 10: enable   M1PWM0-1 outputs
 }
+
 
