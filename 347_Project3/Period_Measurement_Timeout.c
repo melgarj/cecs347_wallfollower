@@ -46,6 +46,45 @@ uint32_t second_time = 0;
 uint32_t first_read=0, second_read=0;
 uint8_t OutOfRange = 0;
 
+// following variables are for for the ain use for the ir
+unsigned long ain1, ain2, ain3;
+char sample = 0; 
+
+///////////////////ADC Stuff///////////////////
+int adcTable[] = {4095, 3050, 1980, 1370, 950, 830, 730, 650, 570, 530, 460, 390, 330, 300, 0};
+int distTable[] = {0, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 999};
+float distance_ADC = 0;  //  <---- THIS USE TO BE CALLed distance but is now changed to distance_ADC so be aware
+float calibration = 0;
+float a = 0;
+float b = 0;
+int ia = 0;
+int ib = 0;
+float m = 0;
+float l = 0;
+float lm;
+int i;
+int f;
+float dist1, dist2;
+float DC;
+
+//======================================================================
+//DEFINITIONS FOR PWM
+#define SYSCTL_RCC_USEPWMDIV  0x00100000 // Enable PWM Clock Divisor
+#define SYSCTL_RCC_PWMDIV_M   0x000E0000 // PWM Unit Clock Divisor
+#define SYSCTL_RCC_PWMDIV_2   0x00000000 // PWM clock /2
+
+#define LEFTFORWARD 					(*((volatile unsigned long *)0x40007010)) //PD2
+#define LEFTBACKWARD 			 		(*((volatile unsigned long *)0x40007020)) //PD3
+#define RIGHTFORWARD			   	(*((volatile unsigned long *)0x40007100)) //Pd6
+#define RIGHTBACKWARD 				(*((volatile unsigned long *)0x40007200)) //Pd7
+	
+#define LED										(*((volatile unsigned long*)0x40025038)) // PF3-1
+
+#define RED 0x02;
+#define BLUE 0x04;
+#define GREEN 0x08;
+	
+// DEFINITIONS FOR THE FSM
 #define TURN_RIGHT 0x4
 #define TURN_LEFT 0x2
 #define GO_STRAIGHT 0x0
@@ -212,5 +251,44 @@ void Timer1A_Handler(void){
   TIMER1_ICR_R = TIMER_ICR_TATOCINT;// acknowledge TIMER1A timeout
 	timeout = 1;
 	TIMER1_CTL_R = 0x00000000;    // disable TIMER1A
+}
+
+
+// INITIALIZAITONS FOR THE PWM OF THE 2 DC MOTORS
+void PortD_Init(void){ 
+	volatile unsigned long delay;	
+  SYSCTL_RCGC2_R 		 |= 0x00000008;  	// (a) activate clock for port D
+	delay = SYSCTL_RCGC2_R;	
+	
+	
+	GPIO_PORTD_LOCK_R = 0x4C4F434B; 
+  GPIO_PORTD_CR_R = 0xCF;           // allow changes to PD0   
+  GPIO_PORTD_AMSEL_R = 0x00;        // 3) disable analog function
+  GPIO_PORTD_DIR_R = 0xCF;          // 5) PD0-1 output    1100.1111
+  GPIO_PORTD_DEN_R = 0xCF;          // 7) enable digital pins PD0-1   	
+	
+	SYSCTL_RCGCPWM_R 	 |= 0x00000002;		// STEP 1: activate clock for PWM Module 1
+	SYSCTL_RCGCGPIO_R  |= 0x00000008;   // STEP 2: enable GPIO clock
+	
+  GPIO_PORTD_AFSEL_R |= 0x03;   			// STEP 3: enable alt function on   PD0-1
+	
+		// STEP 4: configure alt funt PF4-0
+	GPIO_PORTD_PCTL_R = (GPIO_PORTD_PCTL_R & ~0x000000FF)| 0x00000055;
+	
+	// STEP 5: configure the use of PWM divide
+	SYSCTL_RCC_R |= SYSCTL_RCC_USEPWMDIV;  // PWM divider
+	SYSCTL_RCC_R &= ~SYSCTL_RCC_PWMDIV_M;  // clear the PWM divider field
+	SYSCTL_RCC_R += SYSCTL_RCC_PWMDIV_2;   // configure for /2 diveder
+
+	// STEP 6: confiure genertor countdown mode
+	PWM1_0_CTL_R  &= ~0xFFFFFFFF;
+	PWM1_0_GENA_R |= 0x0000008C;
+	PWM1_0_GENB_R |= 0x0000080C;
+	
+	PWM1_0_LOAD_R = period - 1;           // STEP 7 : set period
+  PWM1_0_CMPA_R = ain3 - 1;    		// STEP 8: set duty cycle
+  PWM1_0_CMPB_R =	ain3 - 1;
+  PWM1_0_CTL_R  |= 0x00000001;   	  // STEP 9: start the M1PWM5 generator
+  PWM1_ENABLE_R |= 0x00000003;			// STEP 10: enable   M1PWM0-1 outputs
 }
 

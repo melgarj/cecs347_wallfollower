@@ -1,13 +1,17 @@
 Dependencies for Project 'Lab2', Target 'HelloLaunchPad': (DO NOT MODIFY !)
-F (.\startup.s)(0x5701FDF8)(--cpu Cortex-M4 --pd "__EVAL SETA 1" -g --apcs=interwork -I "C:\Tools\Keil u4\ARM\RV31\INC"-I "C:\Tools\Keil u4\ARM\CMSIS\Include"-I "C:\Tools\Keil u4\ARM\Inc\Luminary"--list .\startup.lst --xref -o .\startup.o --depend .\startup.d)
-F (.\SysTick.c)(0x5BFDD2DF)(-c --cpu Cortex-M4 -D__EVAL -g -O0 --apcs=interwork --split_sections --signed_chars -I.. -I..\..\..-I "C:\Tools\Keil u4\ARM\RV31\INC"-I "C:\Tools\Keil u4\ARM\CMSIS\Include"-I "C:\Tools\Keil u4\ARM\Inc\Luminary"-Drvmdk -DPART_LM4F120H5QR-o .\systick.o --omf_browse .\systick.crf --depend .\systick.d)
-F (.\PLL.c)(0x5230FF84)(-c --cpu Cortex-M4 -D__EVAL -g -O0 --apcs=interwork --split_sections --signed_chars -I.. -I..\..\..-I "C:\Tools\Keil u4\ARM\RV31\INC"-I "C:\Tools\Keil u4\ARM\CMSIS\Include"-I "C:\Tools\Keil u4\ARM\Inc\Luminary"-Drvmdk -DPART_LM4F120H5QR-o .\pll.o --omf_browse .\pll.crf --depend .\pll.d)
-I (PLL.h)(0x5230FF84)
-F (.\Nokia5110.c)(0x5B3A4F90)(-c --cpu Cortex-M4 -D__EVAL -g -O0 --apcs=interwork --split_sections --signed_chars -I.. -I..\..\..-I "C:\Tools\Keil u4\ARM\RV31\INC"-I "C:\Tools\Keil u4\ARM\CMSIS\Include"-I "C:\Tools\Keil u4\ARM\Inc\Luminary"-Drvmdk -DPART_LM4F120H5QR-o .\nokia5110.o --omf_browse .\nokia5110.crf --depend .\nokia5110.d)
-I (Nokia5110.h)(0x5BB0C6E5)
-F (.\Period_Measurement_Timeout.c)(0x5C00A78D)(-c --cpu Cortex-M4 -D__EVAL -g -O0 --apcs=interwork --split_sections --signed_chars -I.. -I..\..\..-I "C:\Tools\Keil u4\ARM\RV31\INC"-I "C:\Tools\Keil u4\ARM\CMSIS\Include"-I "C:\Tools\Keil u4\ARM\Inc\Luminary"-Drvmdk -DPART_LM4F120H5QR-o .\period_measurement_timeout.o --omf_browse .\period_measurement_timeout.crf --depend .\period_measurement_timeout.d)
-I (C:\Tools\Keil u4\ARM\ARMCC\include\stdint.h)(0x51C88A34)
-I (SysTick.h)(0x5BFDD2DF)
-I (tm4c123gh6pm.h)(0x5BFDD2E0)
-I (PLL.h)(0x5230FF84)
-I (Nokia5110.h)(0x5BB0C6E5)
+F (.\startup.s)(0x5C0589FB)(--cpu Cortex-M4 --pd "__EVAL SETA 1" -g --apcs=interwork -I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\Luminary--list .\startup.lst --xref -o .\startup.o --depend .\startup.d)
+F (.\SysTick.c)(0x5C0589FA)(-c --cpu Cortex-M4 -D__EVAL -g -O0 --apcs=interwork --split_sections --signed_chars -I.. -I..\..\..-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\Luminary-Drvmdk -DPART_LM4F120H5QR-o .\systick.o --omf_browse .\systick.crf --depend .\systick.d)
+F (.\PLL.c)(0x5C0589FA)(-c --cpu Cortex-M4 -D__EVAL -g -O0 --apcs=interwork --split_sections --signed_chars -I.. -I..\..\..-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\Luminary-Drvmdk -DPART_LM4F120H5QR-o .\pll.o --omf_browse .\pll.crf --depend .\pll.d)
+I (PLL.h)(0x5C0589FA)
+F (.\Nokia5110.c)(0x5C0589FA)(-c --cpu Cortex-M4 -D__EVAL -g -O0 --apcs=interwork --split_sections --signed_chars -I.. -I..\..\..-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\Luminary-Drvmdk -DPART_LM4F120H5QR-o .\nokia5110.o --omf_browse .\nokia5110.crf --depend .\nokia5110.d)
+I (Nokia5110.h)(0x5C0589FA)
+F (.\Period_Measurement_Timeout.c)(0x5C08198C)(-c --cpu Cortex-M4 -D__EVAL -g -O0 --apcs=interwork --split_sections --signed_chars -I.. -I..\..\..-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\Luminary-Drvmdk -DPART_LM4F120H5QR-o .\period_measurement_timeout.o --omf_browse .\period_measurement_timeout.crf --depend .\period_measurement_timeout.d)
+I (C:\Keil\ARM\ARMCC\include\stdint.h)(0x51C88A34)
+I (SysTick.h)(0x5C0589FA)
+I (tm4c123gh6pm.h)(0x5C0589FB)
+I (PLL.h)(0x5C0589FA)
+I (Nokia5110.h)(0x5C0589FA)
+F (.\ADCSWTrigger.c)(0x5BF47A5F)(-c --cpu Cortex-M4 -D__EVAL -g -O0 --apcs=interwork --split_sections --signed_chars -I.. -I..\..\..-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\Luminary-Drvmdk -DPART_LM4F120H5QR-o .\adcswtrigger.o --omf_browse .\adcswtrigger.crf --depend .\adcswtrigger.d)
+I (ADCSWTrigger.h)(0x5BF47A5F)
+I (C:\Keil\ARM\Inc\Luminary\lm4f120h5qr.h)(0x532CB86E)
+F (.\ADCSWTrigger.h)(0x5BF47A5F)()

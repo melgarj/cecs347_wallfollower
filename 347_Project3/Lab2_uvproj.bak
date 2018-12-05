@@ -411,11 +411,6 @@
               <FilePath>.\startup.s</FilePath>
             </File>
             <File>
-              <FileName>Period_Measurement_NoTimeout.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Period_Measurement_NoTimeout.c</FilePath>
-            </File>
-            <File>
               <FileName>SysTick.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\SysTick.c</FilePath>
@@ -429,6 +424,11 @@
               <FileName>Nokia5110.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Nokia5110.c</FilePath>
+            </File>
+            <File>
+              <FileName>Period_Measurement_Timeout.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Period_Measurement_Timeout.c</FilePath>
             </File>
           </Files>
         </Group>
