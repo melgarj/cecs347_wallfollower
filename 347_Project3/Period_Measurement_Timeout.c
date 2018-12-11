@@ -40,6 +40,7 @@ void init_PortF(void);
 void SysTick_Init(void); 
 void forwardDirection(void);
 void SysTick_Wait(unsigned long delay);
+void Delay(unsigned int t);
 void SysTick_Wait1us(unsigned long delay); 
 
 	unsigned int testa, testb, test1, test2; 
@@ -48,6 +49,7 @@ void SysTick_Wait1us(unsigned long delay);
 uint32_t period=0;
 uint8_t done=0, timeout=0;
 uint32_t first = 0;
+char o;
 
 // the following variables are for testing purpose, need to move inside main after testing
 uint32_t distance=0;
@@ -148,7 +150,7 @@ int main(void){
   //PLL_Init();               // 80 MHz clock
 	ADC_Init298();
 	EnableInterrupts();
-	PLL_Init();
+
 	Nokia5110_Init();
 	Nokia5110_Clear();
 	SysTick_Init();         // use default 16MHz clock
@@ -163,8 +165,52 @@ int main(void){
 	LED = BLUE; 
 	
 	while(1){
+		GPIO_PORTB_DATA_R &= ~0x80; // send low to trigger
+		//Delay(2);
+		SysTick_Wait1us(2);
+		GPIO_PORTB_DATA_R |= 0x80; // send high to trigger
+	//	Delay(10);
+		SysTick_Wait1us(10);
+		GPIO_PORTB_DATA_R &= ~0x80; // send low to trigger
 
-		/*
+    // start timer 0 capture mode
+    TIMER0_IMR_R = 0x00000004;    // enable capture mode event 
+    TIMER0_TAILR_R = MAX_DURATION;    // reload start value
+	  TIMER0_CTL_R = 0x0000000D;    // Enable TIMER0A capture mode: both edges
+		
+		// start timer 1 periodic mode
+    TIMER1_IMR_R = 0x00000001;    // 7) arm timeout interrupt
+    TIMER1_TAILR_R = MAX_DURATION;// reload value
+		TIMER1_CTL_R = 0x00000001;    // enable TIMER1A
+		
+		while ((!done)&&(!timeout)){
+	  TIMER0_CTL_R = 0x00000000;    // disable TIMER0A 
+	  TIMER1_CTL_R = 0x00000000;    // disable TIMER1A 
+    TIMER0_IMR_R = 0x00000000;    // disable interrupt
+    TIMER1_IMR_R = 0x00000000;    // disable interrupt
+		
+		if (done) {
+			// The speed of sound is approximately 340 meters per second, 
+			// or  .0343 c/µS.
+      // Distance = (duration * 0.0343)/2;
+		  distance = (period*MC_LEN*SOUND_SPEED)/2;	
+			OutOfRange = 0;
+			//Nokia5110_Clear();
+			Nokia5110_SetCursor(0,0);
+			Nokia5110_OutUDec(distance);
+		}
+		else { // out of range			
+		  distance = 0;
+			OutOfRange = 1;
+			Nokia5110_SetCursor(0,0);
+			Nokia5110_OutString(" OOR ");
+		}
+		//Nokia5110_OutString("test");
+		first = 0;
+		done = 0;
+    timeout	= 0;		
+
+		
 		if(dist1 <20){
 		left = 	Right(leftWheel);
 		right =  Right(rightWheel); 
@@ -203,11 +249,11 @@ int main(void){
 		
 		LED = 0x0A; 
 		}
-		*/
+		
 		
 		/******************************/
 		
-		
+		/*
 		Nokia5110_SetCursor(0,0);
 	 
 		
@@ -252,6 +298,7 @@ int main(void){
 			Nokia5110_SetCursor(0,0);
 			Nokia5110_OutUDec(distance);
 		}
+		*/
 		/*
 		else { // out of range			
 		  distance = 0;
@@ -259,10 +306,7 @@ int main(void){
 			Nokia5110_SetCursor(0,0);
 			Nokia5110_OutString(" OOR ");
 		}*/
-		//Nokia5110_OutString("test");
-		first = 0;
-		done = 0;
-    timeout	= 0;		
+		//Nokia5110_OutString("test");		
 }
 //=========================================================================================		
 /*
@@ -349,9 +393,9 @@ int main(void){
 			else Nokia5110_OutUDec(dist2);
 
 		}
-		*/
-	}
-}
+		
+	}*/
+}}
 // ***************** Timer0_Init ****************
 // Activate TIMER0 interrupts to capture 
 // the period between a rising edge and a falling edge
@@ -543,12 +587,11 @@ void SysTick_Wait1us(unsigned long delay){
 
 // Can sample at 20 or 10 Hz also
 void SysTick_Init(void){
-	NVIC_ST_CTRL_R = 0;         // disable SysTick during setup
-  NVIC_ST_RELOAD_R = 2000000-1;// reload value
-  NVIC_ST_CURRENT_R = 0;      // any write to current clears it
-  NVIC_SYS_PRI3_R = (NVIC_SYS_PRI3_R&0x00FFFFFF)|0x40000000; // priority 2
-                              // enable SysTick with core clock and interrupts
-  NVIC_ST_CTRL_R = 0x07;
+  NVIC_ST_CTRL_R = 0;                   // disable SysTick during setup
+  NVIC_ST_RELOAD_R = NVIC_ST_RELOAD_M;  // maximum reload value
+  NVIC_ST_CURRENT_R = 0;                // any write to current clears it
+                                        // enable SysTick with core clock
+  NVIC_ST_CTRL_R = NVIC_ST_CTRL_ENABLE+NVIC_ST_CTRL_CLK_SRC;
 }
 
 void SysTick_Handler(){
@@ -562,17 +605,11 @@ void forwardDirection(void){
 	RIGHTBACKWARD = 0x00; 
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+void Delay(unsigned int t){unsigned long volatile time;
+  time = (727240*200/91)/100000;  // 0.1sec
+	for(o = 0; o < t; o++){
+  while(time){
+		time--;
+  }}
+} 
 

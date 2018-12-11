@@ -411,34 +411,19 @@
               <FilePath>.\startup.s</FilePath>
             </File>
             <File>
-              <FileName>PLL.c</FileName>
+              <FileName>main.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\PLL.c</FilePath>
-            </File>
-            <File>
-              <FileName>Nokia5110.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Nokia5110.c</FilePath>
-            </File>
-            <File>
-              <FileName>Period_Measurement_Timeout.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Period_Measurement_Timeout.c</FilePath>
-            </File>
-            <File>
-              <FileName>ADCSWTrigger.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\ADCSWTrigger.c</FilePath>
-            </File>
-            <File>
-              <FileName>ADCSWTrigger.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\ADCSWTrigger.h</FilePath>
+              <FilePath>.\main.c</FilePath>
             </File>
             <File>
               <FileName>states.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\states.c</FilePath>
+            </File>
+            <File>
+              <FileName>ADCSWTrigger.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\ADCSWTrigger.c</FilePath>
             </File>
           </Files>
         </Group>
