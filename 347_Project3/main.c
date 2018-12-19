@@ -15,28 +15,8 @@
 // NOTE: ON TM4C PINS B6/D0 AND B7/D1 ARE INTERCONNECTED
 /*********************************************************/
 
-/*                     TM4C PIN INTERFACE                 */
-// PORT - PIN - MODE
-//  D   -  0  - PWM
-//  D   -  1  - PWM
-//  D   -  2  - GPIO
-//  D   -  3  - GPIO
-//  D   -  6  - GPIO
-//  D   -  7  - GPIO
-
-//  E   -  0  - GPIO
-//  F   -  0  - GPIO
-//  E   -  0  - GPIO
-//  F   -  0  - GPIO
-//  E   -  0  - GPIO
-//  F   -  0  - GPIO
 
 /***********************************************************/
-
-/***********************************************************/
-
-
-
 
 /*                     DEFINE CONSTANTS                   */
 #define SYSCTL_RCC_USEPWMDIV  0x00100000 // Enable PWM Clock Divisor
@@ -108,19 +88,28 @@ unsigned char testButton;
 float dist1, dist2;
 unsigned long ain1, ain2, ain3, dutyCycle;
 char sample=0;
-int adcTable[] = {4095, 3050, 1980, 1370, 950, 830, 730, 650, 570, 530, 460, 390, 330, 300, 0};
+int adcTable[] = {4095, 2400, 1500, 1100, 1000, 800, 700, 550, 500, 410, 400, 300, 200, 100, 0};
 int distTable[] = {0, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 999};
 float distance_ADC = 0;  //  <---- THIS USE TO BE CALLed distance but is now changed to distance_ADC so be aware
 float calibration = 0;
 float a = 0;
 float b = 0;
+float c = 0;
+float d = 0;
 int ia = 0;
 int ib = 0;
+int ic = 0;
+int id = 0;
 float m = 0;
+float m2 = 0;
 float l = 0;
+float l2 = 0;
 float lm;
+float lm2 = 0;
 int i;
+int i2;
 int f;
+int f2;
 
 // ULTRA SONIC VARIABLES
 uint32_t period=0;
@@ -209,37 +198,10 @@ int main(void){
 		// ADC PART OF LOOP	
 		if(sample){
 			sample = 0;	
-			ADC_In298(&ain1, &ain2, &ain3); // Ensure sampler works
+			ADC_In298(&ain1, &ain2); // Ensure sampler works
 			
 			//Update Sensors
 			// Find distance
-		for(i = 0; i < 15; i = i + 1){
-			if(ain1 > adcTable[i]){
-				break;
-			}
-			else{
-				a = adcTable[i+1];
-				ia = i+1;
-			}
-		}
-		
-		for(f = 0; f < 15; f = f + 1){
-			if(ain1 < adcTable[f]){
-				b = adcTable[f];
-				ib = f;
-			}
-			else {
-				break;
-			}
-		}
-		 m = b - a;
-		 l = b - ain1;
-		lm = l / m ;
-		
-		dist1 = distTable[ib] + (lm * 5);
-		Nokia5110_SetCursor(0,2);
-		Nokia5110_OutUDec(dist1);
-		// Find distance
 		for(i = 0; i < 15; i = i + 1){
 			if(ain2 > adcTable[i]){
 				break;
@@ -263,6 +225,33 @@ int main(void){
 		 l = b - ain2;
 		lm = l / m ;
 		
+		dist1 = distTable[ib] + (lm * 5);
+		Nokia5110_SetCursor(0,2);
+		Nokia5110_OutUDec(dist1);
+		// Find distance
+		for(i = 0; i < 15; i = i + 1){
+			if(ain1 > adcTable[i]){
+				break;
+			}
+			else{
+				a = adcTable[i+1];
+				ia = i+1;
+			}
+		}
+		
+		for(f = 0; f < 15; f = f + 1){
+			if(ain1 < adcTable[f]){
+				b = adcTable[f];
+				ib = f;
+			}
+			else {
+				break;
+			}
+		}
+		 m = b - a;
+		 l = b - ain1;
+		lm = l / m ;
+		
 		dist2 = distTable[ib] + (lm * 5);
 		Nokia5110_SetCursor(0,3);
 		Nokia5110_OutUDec(dist2);
@@ -272,7 +261,28 @@ int main(void){
 		// END ADC PART OF LOOP
 	
 		// PWM PART OF LOOP	
-		if(dist1 < 50 && dist2 > 50){
+		if(distance <= 40 && distance > 0){
+			if(dist1 > dist2){
+				left = 	Right(leftWheel);
+				right =  Right(rightWheel); 
+
+				PWM1_0_CMPA_R = right - 1;
+				PWM1_0_CMPB_R = left  - 1;
+				LED = 0x0C;
+			}
+			
+			else if(dist1 < dist2){
+				left = 	Left(leftWheel);
+				right =  Left(rightWheel); 
+
+				PWM1_0_CMPA_R = right - 1;
+				PWM1_0_CMPB_R = left  - 1;
+				LED = 0x0A;
+			}
+			
+		}
+	
+		else if(dist2 <= 23 && dist1 >= 50){
 		left = 	Right(leftWheel);
 		right =  Right(rightWheel); 
 
@@ -281,7 +291,7 @@ int main(void){
 		LED = RED; 
 		}
 		
-		else if (dist2 < 50 && dist1 > 50){
+		else if (dist1 <= 23 && dist2 >= 50){
 		left = 	Left(leftWheel);
 		right =  Left(rightWheel); 
 
@@ -290,7 +300,7 @@ int main(void){
 		LED = GREEN; 
 		}
 		
-		else if(dist2 <= 50 && dist1 <= 50){
+		else if(dist2 <= 43 && dist1 <= 43){
 		left = 	Forward(leftWheel);
 		right =  Forward(rightWheel);
 		
@@ -300,7 +310,7 @@ int main(void){
 		LED = 0x07; 
 		}
 
-	  else if(dist2 > 55 && dist1 > 55 && OutOfRange == 1) {
+	  else if(dist2 > 70 && dist1 > 70 && OutOfRange == 1) {
 		left = 	Stop(leftWheel);
 		right =  Stop(rightWheel);
 		

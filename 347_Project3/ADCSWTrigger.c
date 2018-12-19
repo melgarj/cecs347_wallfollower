@@ -90,11 +90,10 @@ void ADC_Init298(void){
 // ain2 (PE1) 0 to 4095
 // ain9 (PE4) 0 to 4095
 // ain8 (PE5) 0 to 4095
-void ADC_In298(unsigned long *ain2, unsigned long *ain9, unsigned long *ain8){
+void ADC_In298(unsigned long *ain3, unsigned long *ain2){
   ADC0_PSSI_R = 0x0004;            // 1) initiate SS2
   while((ADC0_RIS_R&0x04)==0){};   // 2) wait for conversion done
-  *ain2 = ADC0_SSFIFO2_R&0xFFF;    // 3A) read first result
-  *ain9 = ADC0_SSFIFO2_R&0xFFF;    // 3B) read second result
-  *ain8 = ADC0_SSFIFO2_R&0xFFF;    // 3C) read third result
+  *ain3 = ADC0_SSFIFO2_R&0xFFF;    // 3A) read first result
+  *ain2 = ADC0_SSFIFO2_R&0xFFF;    // 3B) read second result
   ADC0_ISC_R = 0x0004;             // 4) acknowledge completion
 }

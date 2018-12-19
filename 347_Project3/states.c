@@ -22,13 +22,13 @@ typedef const struct State stateType;
 
 stateType fsm[4]={
 	// Straight
-	{30, 45, {STRAIGHT, RIGHT, LEFT, STOP}},
+	{1000, 1000, {STRAIGHT, RIGHT, LEFT, STOP}},
 	
 	// Right
-	{100, 2800, {STRAIGHT, RIGHT, LEFT, STOP}}, // 2800 w/ fresh batteries
+	{200, 2200, {STRAIGHT, RIGHT, LEFT, STOP}}, // 2800 w/ fresh batteries
 	
 	// Left
-	{2060, 100, {STRAIGHT, RIGHT, LEFT, STOP}},
+	{2200, 50, {STRAIGHT, RIGHT, LEFT, STOP}},
 	
 	// Stop
 	{4960, 4960, {STRAIGHT, RIGHT, LEFT, STOP}}

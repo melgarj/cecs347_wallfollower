@@ -65,4 +65,4 @@ void ADC_Init298(void);
 // ain2 (PE1) 0 to 4095
 // ain9 (PE4) 0 to 4095
 // ain8 (PE5) 0 to 4095
-void ADC_In298(unsigned long *ain2, unsigned long *ain9, unsigned long *ain8);
+void ADC_In298(unsigned long *ain3, unsigned long *ain2);
